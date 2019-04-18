@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icones/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icones/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icones/favicon-16x16.png">
+
+    <title>Movie Scrapper</title>
+
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Custom styles for this template -->
+    <link href="https://getbootstrap.com/docs/4.0/examples/sign-in/signin.css" rel="stylesheet">
+</head>
+
+<body class="text-center">
+    <form class="form-signin" method="POST" action="/search">
+        <img class="mb-4" style="border-radius:50%"
+            src="https://assets.digicorus.corusdigitaldev.com/wp-content/uploads/sites/7/2018/06/01144909/Movietime_Generic2_462x386.jpg"
+            alt="" width="120" height="120">
+        <h1 class="h3 mb-3 font-weight-normal">Entrez l'url d'un film</h1>
+        <label for="inputMovie" class="sr-only">url</label>
+        <input type="text" style=" margin-bottom: 10px;" id="inputMovie" class="form-control"
+            placeholder="Film ou série" required autofocus name="search">
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Chercher</button>
+        <p class="mt-5 mb-3 text-muted">&copy; 2019</p>
+    </form>
+</body>
+
+</html>
