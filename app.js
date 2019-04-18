@@ -12,6 +12,16 @@ app.use(
         extended: true,
     })
 )
+function getOtherPageLink(url, callback) {
+    axios
+        .get(url)
+        .then(res => {
+            callback(getOneFileLink(res.data))
+        })
+        .catch(error => {
+            callback(error)
+        })
+}
 function getOneFileLink(data) {
     let dl_tables = $('.downloadsortsonlink', data)
     for (let i = 0; i < dl_tables.length; i++) {
@@ -26,37 +36,57 @@ function getOneFileLink(data) {
             )
         }
     }
+    return undefined
+}
+function getQualities(qualities, callback) {
+    if (qualities.name === 'a') {
+        let link = qualities.attribs.href
+        let quality =
+            qualities.children[0].children[0].children[0].children[0].data
+
+        let language =
+            qualities.children[0].children[1].children[0].children[0].data
+
+        getOtherPageLink(link, resultLink => {
+            callback([quality, language, link, resultLink])
+        })
+    } else {
+        callback(undefined)
+    }
+}
+function asyncFor(index, data, arr, callback) {
+    if (index < data.length) {
+        getQualities(data[index], res => {
+            if (res != undefined && res[3] != undefined) arr.push(res)
+            asyncFor(index + 1, data, arr, callback)
+        })
+    } else {
+        callback(arr)
+    }
 }
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/public/index.html'))
 })
 app.post('/search', (req, res) => {
+    var _res = res
     axios
         .get(req.body.search)
         .then(res => {
-            console.log(`statusCode: ${res.status}`)
             let qualities = $('.otherversions', res.data).children()
             var available_qualities = []
-            for (let i = 0; i < qualities.length; i++)
-                if (qualities[i].name === 'a') {
-                    let link = qualities[i].attribs.href
-                    let quality =
-                        qualities[i].children[0].children[0].children[0]
-                            .children[0].data
+            asyncFor(0, qualities, [], finalArr => {
+                let final = $('.col-mov-right', res.data)
+                    .children()[2]
+                    .children[0].data.split('|')
 
-                    let language =
-                        qualities[i].children[0].children[1].children[0]
-                            .children[0].data
-                    available_qualities.push([quality, language, link])
-                }
-            let final = $('.col-mov-right', res.data)
-                .children()[2]
-                .children[0].data.split('|')
-
-            available_qualities.push([final[0], final[1], req.body.search])
-            console.log(getOneFileLink(res.data))
-
-            res.json(JSON.parse(available_qualities))
+                finalArr.push([
+                    final[0],
+                    final[1],
+                    req.body.search,
+                    getOneFileLink(res.data),
+                ])
+                _res.send(finalArr)
+            })
         })
         .catch(error => {
             res.send(error)
